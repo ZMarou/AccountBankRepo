@@ -1,9 +1,5 @@
 package com.sg.bankaccount.dto;
 
-import java.util.List;
-
-import com.sg.bankaccount.model.GenericAccount;
-
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -20,8 +16,6 @@ public class ClientDTO {
 	private String lastName;
 
 	private String email;
-
-	private List<GenericAccount> accounts;
 
 	public ClientDTO(long id, String firstName, String lastName, String email) {
 		super();

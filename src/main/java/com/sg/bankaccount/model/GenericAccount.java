@@ -28,4 +28,6 @@ public abstract class GenericAccount {
 
 	@OneToMany
 	protected List<History> history;
+	
+	protected double balance;
 }

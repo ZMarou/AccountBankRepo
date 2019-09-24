@@ -21,4 +21,19 @@ public class Operation extends GenericOperation {
 	@NotNull
 	private double amount;
 
+	public Operation(@NotNull OperationType operationType, @NotNull double amount) {
+		super();
+		this.operationType = operationType;
+		this.amount = amount;
+	}
+	
+	public Operation(@NotNull long id, @NotNull OperationType operationType, @NotNull double amount) {
+		super();
+		this.operationType = operationType;
+		this.amount = amount;
+		this.id = id;
+	}
+	
+	
+
 }

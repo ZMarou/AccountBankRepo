@@ -26,11 +26,13 @@ public class AccountServiceImpl implements AccountService {
 	public long create(long idClient) throws BusinessException {
 		Optional<Client> client = clientRepository.findById(idClient);
 		if(!client.isPresent()) {
-			throw new BusinessException("Client not found");
+			throw new BusinessException("Client id not found");
 		}
 		Account account = new Account();
 		account.setClient(client.get());
 		account.setHistory(new ArrayList<>());
+		account.setBalance(0);
+		account.setAmountDiscovered(-200);
 		Account accountCreated = accountRepository.save(account);
 		return accountCreated.getId();
 	}

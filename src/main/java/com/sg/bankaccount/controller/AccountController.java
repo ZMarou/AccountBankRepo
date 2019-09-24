@@ -22,12 +22,12 @@ public class AccountController {
 
 	@ApiOperation(value = "Create new account to client")
 	@PostMapping
-	public ResponseEntity<Long> createClient(@RequestBody Long clientId) {
+	public ResponseEntity<Object> createClient(@RequestBody long clientId) {
 		Long accountId;
 		try {
 			accountId = accountService.create(clientId);
 		} catch (BusinessException e) {
-			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+			return new ResponseEntity<>(e.getMessage(),HttpStatus.BAD_REQUEST);
 		}
 		return new ResponseEntity<>(accountId, HttpStatus.CREATED);
 	}
