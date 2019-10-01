@@ -12,14 +12,14 @@ public class AccountDTO {
 	private long id;
 	private long clientId;
 	private double balance;
-	private double amountDiscovered;
+	private double amountOverdraft;
 
-	public AccountDTO(long id, long clientId, double balance, double amountDiscovered) {
+	public AccountDTO(long id, long clientId, double balance, double amountOverdraft) {
 		super();
 		this.id = id;
 		this.clientId = clientId;
 		this.balance = balance;
-		this.amountDiscovered = amountDiscovered;
+		this.amountOverdraft = amountOverdraft;
 	}
 
 }

@@ -52,7 +52,7 @@ public class OperationServiceImpl implements OperationService {
         account.setBalance(account.getBalance() + operationParamDTO.getAmount());
 
         account = accountRepository.save(account);
-        return new AccountDTO(account.getId(), operationParamDTO.getIdClient(), account.getBalance(), account.getAmountDiscovered());
+        return new AccountDTO(account.getId(), operationParamDTO.getIdClient(), account.getBalance(), account.getAmountOverdraft());
     }
 
     @Override
@@ -60,7 +60,7 @@ public class OperationServiceImpl implements OperationService {
         Account account = validateOperation(operationParamDTO.getIdClient(), operationParamDTO.getIdAccount(),
                 operationParamDTO.getAmount());
 
-        if (account.getBalance() - operationParamDTO.getAmount() < account.getAmountDiscovered()) {
+        if (account.getBalance() - operationParamDTO.getAmount() < account.getAmountOverdraft()) {
             throw new BusinessException("Insufficient resource");
         }
 
@@ -78,7 +78,7 @@ public class OperationServiceImpl implements OperationService {
         account.setBalance(account.getBalance() - operationParamDTO.getAmount());
 
         account = accountRepository.save(account);
-        return new AccountDTO(account.getId(), operationParamDTO.getIdClient(), account.getBalance(), account.getAmountDiscovered());
+        return new AccountDTO(account.getId(), operationParamDTO.getIdClient(), account.getBalance(), account.getAmountOverdraft());
     }
 
     private Account validateOperation(long idClient, long idAccount, double amount) throws BusinessException {

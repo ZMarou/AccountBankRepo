@@ -68,12 +68,12 @@ public class OperationServiceImplTest {
 		accountExpected.setClient(clientExpected);
 		accountExpected.setHistory(new ArrayList<>());
 		accountExpected.setBalance(100);
-		accountExpected.setAmountDiscovered(-200);
+		accountExpected.setAmountOverdraft(-200);
 		accountCopyExpected = new Account();
 		accountCopyExpected.setClient(clientExpected);
 		accountCopyExpected.setHistory(new ArrayList<>());
 		accountCopyExpected.setBalance(100);
-		accountCopyExpected.setAmountDiscovered(-200);
+		accountCopyExpected.setAmountOverdraft(-200);
 	}
 
 	@Test(expected = BusinessException.class)

@@ -64,7 +64,7 @@ public class HistoryServiceImplTest {
 		accountExpected.setClient(clientExpected);
 		accountExpected.setHistory(new ArrayList<>());
 		accountExpected.setBalance(100);
-		accountExpected.setAmountDiscovered(-200);
+		accountExpected.setAmountOverdraft(-200);
 	}
 
 	@Test(expected = BusinessException.class)

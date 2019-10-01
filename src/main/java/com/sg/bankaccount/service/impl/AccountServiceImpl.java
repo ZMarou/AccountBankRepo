@@ -32,7 +32,7 @@ public class AccountServiceImpl implements AccountService {
 		account.setClient(client.get());
 		account.setHistory(new ArrayList<>());
 		account.setBalance(0);
-		account.setAmountDiscovered(-200);
+		account.setAmountOverdraft(-200);
 		Account accountCreated = accountRepository.save(account);
 		return accountCreated.getId();
 	}
