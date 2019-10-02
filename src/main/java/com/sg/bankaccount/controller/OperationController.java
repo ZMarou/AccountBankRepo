@@ -19,7 +19,7 @@ import com.sg.bankaccount.service.OperationService;
 import io.swagger.annotations.ApiOperation;
 
 @RestController
-@RequestMapping(path = "/api/aperation")
+@RequestMapping(path = "/api/operation")
 public class OperationController {
 
 	@Autowired
