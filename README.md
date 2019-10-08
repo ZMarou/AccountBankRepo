@@ -8,6 +8,7 @@ Deposit and Withdrawal
 Account statement (date, amount, balance)
 Statement printing
 User Stories
+
 US 1:
 In order to save money
 As a bank client
