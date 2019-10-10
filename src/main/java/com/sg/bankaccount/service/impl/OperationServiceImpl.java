@@ -24,76 +24,75 @@ import com.sg.bankaccount.service.OperationService;
 @Transactional
 public class OperationServiceImpl implements OperationService {
 
-	@Autowired
-	private AccountRepositry accountRepository;
-	
-	@Autowired
-	private HistoryRepository historyRepository;
-	
-	@Autowired
-	private OperationRepository operationRepository;
+    @Autowired
+    private AccountRepositry accountRepository;
 
-	@Override
-	public AccountDTO saveMoney(OperationParamDTO operationParamDTO) throws BusinessException {
-		Account account = validateOperation(operationParamDTO.getIdClient(), operationParamDTO.getIdAccount(),
-				operationParamDTO.getAmount());
+    @Autowired
+    private HistoryRepository historyRepository;
 
-		Operation operation = new Operation(OperationType.DEPOSIT, operationParamDTO.getAmount());
-		operation = operationRepository.save(operation);
-		
-		History history = new History();
-		history.setBalance(account.getBalance() + operationParamDTO.getAmount());
-		history.setOperation(operation);
-		history.setDate(new Date());
-		history.setAccount(account);
-		history = historyRepository.save(history);
-		
-		account.getHistory().add(history);
-		account.setBalance(account.getBalance() + operationParamDTO.getAmount());
+    @Autowired
+    private OperationRepository operationRepository;
 
-		account = accountRepository.save(account);
-		return new AccountDTO(account.getId(), operationParamDTO.getIdClient(), account.getBalance(), account.getAmountDiscovered());
-	}
+    @Override
+    public AccountDTO saveMoney(OperationParamDTO operationParamDTO) throws BusinessException {
+        Account account = validateOperation(operationParamDTO.getIdClient(), operationParamDTO.getIdAccount(),
+                operationParamDTO.getAmount());
 
-	@Override
-	public AccountDTO retrieveMoney(OperationParamDTO operationParamDTO) throws BusinessException {
-		Account account = validateOperation(operationParamDTO.getIdClient(), operationParamDTO.getIdAccount(),
-				operationParamDTO.getAmount());
+        Operation operation = new Operation(OperationType.DEPOSIT, operationParamDTO.getAmount());
+        operation = operationRepository.save(operation);
 
-		if (account.getBalance() - operationParamDTO.getAmount() < account.getAmountDiscovered()) {
-			throw new BusinessException("Insufficient resource");
-		}
+        History history = new History();
+        history.setBalance(account.getBalance() + operationParamDTO.getAmount());
+        history.setOperation(operation);
+        history.setDate(new Date());
+        history.setAccount(account);
+        history = historyRepository.save(history);
 
-		Operation operation = new Operation(OperationType.WITHDRAWAL, operationParamDTO.getAmount());
-		operation = operationRepository.save(operation);
-		
-		History history = new History();
-		history.setBalance(account.getBalance() - operationParamDTO.getAmount());
-		history.setOperation(operation);
-		history.setDate(new Date());
-		history.setAccount(account);
-		history = historyRepository.save(history);
-		
-		account.getHistory().add(history);
-		account.setBalance(account.getBalance() - operationParamDTO.getAmount());
+        account.getHistory().add(history);
+        account.setBalance(account.getBalance() + operationParamDTO.getAmount());
 
-		account = accountRepository.save(account);
-		return new AccountDTO(account.getId(), operationParamDTO.getIdClient(), account.getBalance(), account.getAmountDiscovered());
-	}
+        account = accountRepository.save(account);
+        return new AccountDTO(account.getId(), operationParamDTO.getIdClient(), account.getBalance(), account.getAmountOverdraft());
+    }
 
-	private Account validateOperation(long idClient, long idAccount, double amount) throws BusinessException {
-		Optional<Account> optionalAccount = accountRepository.findById(idAccount);
-		if (!optionalAccount.isPresent()) {
-			throw new BusinessException("Account id not found");
-		}
-		Account account = optionalAccount.get();
-		if (account.getClient() == null || account.getClient().getId() != idClient) {
-			throw new BusinessException("Client id not matching to requested accout");
-		}
-		if (amount <= 0) {
-			throw new BusinessException("The amount is incorrect");
-		}
-		return account;
-	}
+    @Override
+    public AccountDTO retrieveMoney(OperationParamDTO operationParamDTO) throws BusinessException {
+        Account account = validateOperation(operationParamDTO.getIdClient(), operationParamDTO.getIdAccount(),
+                operationParamDTO.getAmount());
+
+        if (account.getBalance() - operationParamDTO.getAmount() < account.getAmountOverdraft()) {
+            throw new BusinessException("Insufficient resource");
+        }
+
+        Operation operation = new Operation(OperationType.WITHDRAWAL, operationParamDTO.getAmount());
+        operation = operationRepository.save(operation);
+
+        History history = new History();
+        history.setBalance(account.getBalance() - operationParamDTO.getAmount());
+        history.setOperation(operation);
+        history.setDate(new Date());
+        history.setAccount(account);
+        history = historyRepository.save(history);
+
+        account.getHistory().add(history);
+        account.setBalance(account.getBalance() - operationParamDTO.getAmount());
+
+        account = accountRepository.save(account);
+        return new AccountDTO(account.getId(), operationParamDTO.getIdClient(), account.getBalance(), account.getAmountOverdraft());
+    }
+
+    private Account validateOperation(long idClient, long idAccount, double amount) throws BusinessException {
+        Optional<Account> optionalAccount = accountRepository.findById(idAccount);
+
+        final Account account = optionalAccount.orElseThrow(() -> new BusinessException("Account id not found"));
+
+        if (account.getClient() == null || account.getClient().getId() != idClient) {
+            throw new BusinessException("Client id not matching to requested accout");
+        }
+        if (amount <= 0) {
+            throw new BusinessException("The amount is incorrect");
+        }
+        return account;
+    }
 
 }

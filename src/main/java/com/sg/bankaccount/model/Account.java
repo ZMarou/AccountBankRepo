@@ -12,6 +12,6 @@ import lombok.Setter;
 @NoArgsConstructor
 public class Account extends GenericAccount{
 	
-	private double amountDiscovered;
+	private double amountOverdraft;
 
 }
