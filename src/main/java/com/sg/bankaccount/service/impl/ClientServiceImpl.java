@@ -1,27 +1,42 @@
 package com.sg.bankaccount.service.impl;
 
-import javax.transaction.Transactional;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.sg.bankaccount.dto.ClientDTO;
-import com.sg.bankaccount.model.Client;
-import com.sg.bankaccount.repository.ClientRepository;
-import com.sg.bankaccount.service.ClientService;
+import com.sg.bankaccount.domain.Client;
+import com.sg.bankaccount.domain.service.ClientService;
+import com.sg.bankaccount.infra.entities.ClientEntity;
+import com.sg.bankaccount.infra.repository.ClientRepository;
+import com.sg.bankaccount.service.impl.mapper.ClientMapper;
 
 @Service
-@Transactional
 public class ClientServiceImpl implements ClientService {
 
 	@Autowired
 	private ClientRepository clientRepository;
+	
+	@Autowired
+	private ClientMapper clientMapper;
 
 	@Override
-	public ClientDTO create(ClientDTO dto) {
-		Client clientCreated = clientRepository.save(new Client(dto.getFirstName(), dto.getLastName(), dto.getEmail()));
-		return new ClientDTO(clientCreated.getId(), clientCreated.getFirstName(), clientCreated.getLastName(),
-				clientCreated.getEmail());
+	public Client save(Client client) {
+		ClientEntity clientEntity = clientMapper.convertToEntity(client);
+		ClientEntity clientCreated = clientRepository.save(clientEntity);
+		return clientMapper.convertToDomain(clientCreated);
+	}
+
+	@Override
+	public Client validateClient(long clientId) {
+		if (clientId != 0) {
+			Optional<ClientEntity> optionalClient = clientRepository.findById(clientId);
+			ClientEntity clientCreated = optionalClient.orElse(null);
+			return clientCreated != null
+					? clientMapper.convertToDomain(clientCreated)
+					: null;
+		}
+		return null;
 	}
 
 }

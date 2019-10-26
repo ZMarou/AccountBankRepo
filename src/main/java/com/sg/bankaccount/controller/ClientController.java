@@ -9,8 +9,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.sg.bankaccount.dto.ClientDTO;
-import com.sg.bankaccount.service.ClientService;
+import com.sg.bankaccount.controller.dto.ClientDTO;
+import com.sg.bankaccount.controller.mapper.ClientAPIMapper;
+import com.sg.bankaccount.domain.Client;
+import com.sg.bankaccount.domain.api.ClientAPI;
+import com.sg.bankaccount.domain.exception.BusinessException;
 
 import io.swagger.annotations.ApiOperation;
 
@@ -20,13 +23,18 @@ import io.swagger.annotations.ApiOperation;
 public class ClientController {
 
 	@Autowired
-	private ClientService clientService;
+	private ClientAPI clientAPI;
 
 	@ApiOperation(value = "Create client")
 	@PostMapping
-	public ResponseEntity<ClientDTO> createClient(@RequestBody ClientDTO dto) {
-		ClientDTO clientCreated = clientService.create(dto);
-		return new ResponseEntity<>(clientCreated, HttpStatus.CREATED);
+	public ResponseEntity<Object> createClient(@RequestBody ClientDTO dto) {
+		Client clientCreated;
+		try {
+			clientCreated = clientAPI.addClient(dto);
+		} catch (BusinessException e) {
+			return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+		}
+		return new ResponseEntity<>(new ClientAPIMapper().convertToDTO(clientCreated), HttpStatus.CREATED);
 	}
 
 }
